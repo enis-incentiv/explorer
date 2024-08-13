@@ -1,0 +1,19 @@
+name: Trigger Webhook on PR Merge to Main
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  trigger-webhook:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Send webhook
+      run: |
+        curl -X POST -H "Content-Type: application/json" \
+        --data '{"ref": "${{ github.ref }}", "after": "${{ github.sha }}"}' \
+        http://162.19.78.232:5000/webhook-handler/explorer
